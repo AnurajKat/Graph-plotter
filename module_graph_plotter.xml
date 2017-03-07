@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_graph_plotter" default="compile.module.graph_plotter">
+  <dirname property="module.graph_plotter.basedir" file="${ant.file.module_graph_plotter}"/>
+  
+  <property name="module.jdk.home.graph_plotter" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.graph_plotter" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.graph_plotter" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.graph_plotter" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="graph_plotter.output.dir" value="${module.graph_plotter.basedir}/out/production/graph plotter"/>
+  <property name="graph_plotter.testoutput.dir" value="${module.graph_plotter.basedir}/out/test/graph plotter"/>
+  
+  <path id="graph_plotter.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="graph_plotter.module.production.classpath">
+    <path refid="${module.jdk.classpath.graph_plotter}"/>
+  </path>
+  
+  <path id="graph_plotter.runtime.production.module.classpath">
+    <pathelement location="${graph_plotter.output.dir}"/>
+  </path>
+  
+  <path id="graph_plotter.module.classpath">
+    <path refid="${module.jdk.classpath.graph_plotter}"/>
+    <pathelement location="${graph_plotter.output.dir}"/>
+  </path>
+  
+  <path id="graph_plotter.runtime.module.classpath">
+    <pathelement location="${graph_plotter.testoutput.dir}"/>
+    <pathelement location="${graph_plotter.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.graph_plotter">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.graph_plotter">
+    <patternset refid="excluded.from.module.graph_plotter"/>
+  </patternset>
+  
+  <path id="graph_plotter.module.sourcepath">
+    <dirset dir="${module.graph_plotter.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.graph_plotter" depends="compile.module.graph_plotter.production,compile.module.graph_plotter.tests" description="Compile module graph plotter"/>
+  
+  <target name="compile.module.graph_plotter.production" depends="register.custom.compilers" description="Compile module graph plotter; production classes">
+    <mkdir dir="${graph_plotter.output.dir}"/>
+    <javac2 destdir="${graph_plotter.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.graph_plotter}/javac">
+      <compilerarg line="${compiler.args.graph_plotter}"/>
+      <bootclasspath refid="graph_plotter.module.bootclasspath"/>
+      <classpath refid="graph_plotter.module.production.classpath"/>
+      <src refid="graph_plotter.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.graph_plotter"/>
+    </javac2>
+    
+    <copy todir="${graph_plotter.output.dir}">
+      <fileset dir="${module.graph_plotter.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.graph_plotter.tests" depends="register.custom.compilers,compile.module.graph_plotter.production" description="compile module graph plotter; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.graph_plotter" description="cleanup module">
+    <delete dir="${graph_plotter.output.dir}"/>
+    <delete dir="${graph_plotter.testoutput.dir}"/>
+  </target>
+</project>
